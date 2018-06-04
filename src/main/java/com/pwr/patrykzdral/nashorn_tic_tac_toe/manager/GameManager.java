@@ -8,6 +8,7 @@ import com.pwr.patrykzdral.nashorn_tic_tac_toe.model.BoardPosition;
 import com.pwr.patrykzdral.nashorn_tic_tac_toe.move.MoveStrategy;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.pwr.patrykzdral.nashorn_tic_tac_toe.controller.MainController.board;
 
@@ -20,9 +21,9 @@ public class GameManager {
 
     private int boardSize = 5;
 
-    private BoardEntity playerEntity = BoardEntity.O;
+    private BoardEntity playerEntity = BoardEntity.X;
 
-    private BoardEntity aiEntity = BoardEntity.X;
+    private BoardEntity aiEntity = BoardEntity.O;
 
 
     public GameManager() {
@@ -63,13 +64,13 @@ public class GameManager {
     public void executeAiMove() {
 
         BoardPosition boardPosition = enemyMoveStrategy.nextMove(aiEntity, gameBoard);
-
         gameBoard.setEntityAt(boardPosition, aiEntity);
-
         board[boardPosition.getX()][boardPosition.getY()].drawO();
     }
 
-
+    public int getNumbersOfEmptyPlaces(){
+        return gameBoard.getNumberOfEmptyPlaces();
+    }
 
     public void setEnemyMoveStrategy(MoveStrategy enemyMoveStrategy) {
         this.enemyMoveStrategy = enemyMoveStrategy;

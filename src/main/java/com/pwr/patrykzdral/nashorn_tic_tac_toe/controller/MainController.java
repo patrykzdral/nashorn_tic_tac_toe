@@ -53,7 +53,7 @@ public class MainController implements Initializable {
 
                 paneMain.getChildren().add(tile);
 
-                board[j][i] = tile;
+                board[i][j] = tile;
             }
         }
 
@@ -76,6 +76,11 @@ public class MainController implements Initializable {
 
 
     public static void checkState() {
+        System.out.println(gameManager.getNumbersOfEmptyPlaces());
+        if(gameManager.getGameBoard().getNumberOfEmptyPlaces()==0){
+            playable=false;
+            return;
+        }
         for (Combo combo : combos) {
             if (combo.isComplete()) {
                 playable = false;

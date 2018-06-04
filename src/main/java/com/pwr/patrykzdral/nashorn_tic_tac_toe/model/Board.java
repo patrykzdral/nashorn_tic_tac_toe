@@ -2,6 +2,7 @@ package com.pwr.patrykzdral.nashorn_tic_tac_toe.model;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Board {
 
@@ -31,4 +32,25 @@ public class Board {
     public void setEntityAt(BoardPosition boardPosition, BoardEntity playerEntity) {
         boardState[boardPosition.getX()][boardPosition.getY()] = playerEntity;
     }
+
+    public int getNumberOfEmptyPlaces(){
+        int number=0;
+        for(int i=0;i<5;i++){
+            for(int j =0;j<5;j++){
+                if(boardState[i][j]==BoardEntity.EMPTY)
+                    number++;
+            }
+        }
+        return number;
+    }
+
+    public void out(){
+        for(int i = 0; i<5;i++){
+            for(int j =0 ; j<5 ;j++){
+                System.out.println(boardState[i][j] + " "+i+" "+j);
+            }
+            System.out.println();
+        }
+    }
+
 }
