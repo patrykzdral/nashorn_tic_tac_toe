@@ -63,10 +63,15 @@ public class Tile extends StackPane {
     }
 
     private void drawX() {
+        text.setStyle("-fx-stroke: Black;");
+        text.setFill(Color.web("#9b9a40"));
         text.setText("X");
+
     }
 
     public void drawO() {
+        text.setStyle("-fx-stroke: Black;");
+        text.setFill(Color.web("223a5e"));
         text.setText("O");
     }
 

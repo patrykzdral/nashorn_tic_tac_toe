@@ -19,11 +19,13 @@ public class Main extends Application
     public void start(Stage primaryStage) {
         try {
             setMainStage(primaryStage);
+            primaryStage.setTitle("Kółko i krzyżyk");
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/fxml/main.fxml"));
             loader.load();
             Parent root = loader.getRoot();
-            primaryStage.setScene(new Scene(root, 1000, 750));
+            primaryStage.setScene(new Scene(root, 1050, 750));
+
             //primaryStage.setResizable(false);
             primaryStage.centerOnScreen();
 

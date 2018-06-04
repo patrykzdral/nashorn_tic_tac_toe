@@ -1,5 +1,6 @@
 package com.pwr.patrykzdral.nashorn_tic_tac_toe.controller;
 
+import com.pwr.patrykzdral.nashorn_tic_tac_toe.fxFiles.custom.CustomMessageBox;
 import com.pwr.patrykzdral.nashorn_tic_tac_toe.manager.GameManager;
 import com.pwr.patrykzdral.nashorn_tic_tac_toe.model.Board;
 import com.pwr.patrykzdral.nashorn_tic_tac_toe.move.MoveStrategy;
@@ -13,26 +14,37 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.StringConverter;
 
 import javax.script.ScriptException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MainController implements Initializable {
     public  Pane paneMain;
-
+    private final String PATH = "src/main/resources/move_strategies";
     private static Pane root = new Pane();
     public Button buttonRestart;
-
+    private static CustomMessageBox customMessageBox;
+    public Button buttonChangeStrategy;
+    public ComboBox<MoveStrategy> comboBoxStrategies;
+    private List<MoveStrategy> moveStrategies;
+    private MoveStrategyFromJSFile mover;
     private MoveStrategy enemyMoveStrategy = new MoveStrategyFromJSFile().load(new File("src/main/resources/move_strategies/randomStrategy.js"));
     public static GameManager gameManager = new GameManager();
 
@@ -81,21 +93,26 @@ public class MainController implements Initializable {
 
     public static void checkState() {
         System.out.println(gameManager.getNumbersOfEmptyPlaces());
-        if(gameManager.getGameBoard().getNumberOfEmptyPlaces()==0){
-            playable=false;
-            return;
-        }
+
         for (Combo combo : combos) {
             if (combo.isComplete()) {
                 playable = false;
                 playWinAnimation(combo);
-                break;
+                return;
             }
+        }
+        if(gameManager.getGameBoard().getNumberOfEmptyPlaces()==0){
+            playable=false;
+            customMessageBox.showMessageBox(Alert.AlertType.INFORMATION, "REMIS",
+                    "KONIEC GRY",
+                    "Gra nie została rostrzygnięta").showAndWait();
         }
     }
 
     private static void playWinAnimation(Combo combo) {
         Line line = new Line();
+        line.setStrokeWidth(5);
+        line.setStyle("-fx-stroke: red;");
         line.setStartX(combo.tiles[0].getCenterX());
         line.setStartY(combo.tiles[0].getCenterY());
         line.setEndX(combo.tiles[0].getCenterX());
@@ -108,15 +125,55 @@ public class MainController implements Initializable {
                 new KeyValue(line.endXProperty(), combo.tiles[4].getCenterX()),
                 new KeyValue(line.endYProperty(), combo.tiles[4].getCenterY())));
         timeline.play();
+        if(combo.tiles[0].getValue().equals("X")){
+            customMessageBox.showMessageBox(Alert.AlertType.INFORMATION, "This is the end",
+                    "KONIEC GRY",
+                    "Wygrałeś, gratulacje !").showAndWait();
+        }
+        if(combo.tiles[0].getValue().equals("O")){
+            customMessageBox.showMessageBox(Alert.AlertType.INFORMATION, "This is the end",
+                    "KONIEC GRY",
+                    "Wygrał komputer, spróbuj ponownie :( !").showAndWait();
+        }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         createContent();
+        moveStrategies = new ArrayList<>();
         paneMain.getChildren().add(root);
         gameManager.startNewGame();
+        mover = new MoveStrategyFromJSFile();
         gameManager.setEnemyMoveStrategy(enemyMoveStrategy);
+        loadFromDirectory(new File(PATH));
+        comboBoxStrategies.getItems().addAll(moveStrategies);
+        customMessageBox = new CustomMessageBox();
+        comboBoxStrategies.getSelectionModel().select(1);
 
+        comboBoxStrategies.setCellFactory(listView -> new ListCell<MoveStrategy>() {
+            @Override
+            protected void updateItem(MoveStrategy strategy, boolean empty) {
+                super.updateItem(strategy, empty);
+                if (strategy == null || empty) {
+                    setGraphic(null);
+                } else {
+                    setText(strategy.getIdentifier());
+                }
+            }
+
+        });
+
+        comboBoxStrategies.setConverter(new StringConverter<MoveStrategy>() {
+            @Override
+            public String toString(MoveStrategy strategy) {
+                return strategy == null ? null : strategy.getIdentifier();
+            }
+
+            @Override
+            public MoveStrategy fromString(String string) {
+                return null;
+            }
+        });
     }
 
 
@@ -131,4 +188,30 @@ public class MainController implements Initializable {
         root.getChildren().clear();
         gameManager.startNewGame();
     }
+
+    public void buttonChangeStrategy_onAction(ActionEvent actionEvent) {
+
+        gameManager.setEnemyMoveStrategy(comboBoxStrategies.getSelectionModel().getSelectedItem());
+        
+    }
+
+    public void loadFromDirectory(File directory)  {
+        File[] scriptFiles = directory.listFiles();
+        System.out.println(Arrays.toString(scriptFiles));
+        assert scriptFiles != null;
+        moveStrategies = Stream.of(scriptFiles)
+                .map(file -> {
+                    try {
+                        return mover.load(file);
+                    } catch (FileNotFoundException | ScriptException e) {
+                        customMessageBox.showMessageBox(Alert.AlertType.WARNING, "Ostrzeżenie",
+                                "Operacja załadowania strategii nie powiodła się.",
+                                "Powód: nieprawidłowe pliki w katalogu").showAndWait();
+                    }
+                    return null;
+                })
+                .collect(Collectors.toList());
+
+    }
+
 }

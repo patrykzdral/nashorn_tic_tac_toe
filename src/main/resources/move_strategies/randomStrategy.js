@@ -15,6 +15,9 @@ var RandomStrategy = Java.extend(MoveStrategy, {
         } while(boardSituation.getEntityAt(new BoardPosition(randomX, randomY)) !== BoardEntity.EMPTY);
 
         return new BoardPosition(randomX, randomY);
+    },
+    getIdentifier: function() {
+        return "losowa miejsce";
     }
 });
 
