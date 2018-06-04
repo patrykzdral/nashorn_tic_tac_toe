@@ -34,7 +34,7 @@ public class Tile extends StackPane {
                 return;
 
             if (event.getButton() == MouseButton.PRIMARY) {
-                if (!turnX)
+                if (getValue().equals("X")||getValue().equals("O"))
                     return;
 
                 drawX();
@@ -69,4 +69,9 @@ public class Tile extends StackPane {
     public void drawO() {
         text.setText("O");
     }
+
+    public void clear() {
+        text.setText(" ");
+    }
+
 }

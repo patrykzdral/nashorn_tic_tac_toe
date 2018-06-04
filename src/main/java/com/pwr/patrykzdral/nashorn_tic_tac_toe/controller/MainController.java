@@ -1,6 +1,7 @@
 package com.pwr.patrykzdral.nashorn_tic_tac_toe.controller;
 
 import com.pwr.patrykzdral.nashorn_tic_tac_toe.manager.GameManager;
+import com.pwr.patrykzdral.nashorn_tic_tac_toe.model.Board;
 import com.pwr.patrykzdral.nashorn_tic_tac_toe.move.MoveStrategy;
 import com.pwr.patrykzdral.nashorn_tic_tac_toe.move.MoveStrategyFromJSFile;
 import com.pwr.patrykzdral.nashorn_tic_tac_toe.ui_model.Combo;
@@ -8,9 +9,11 @@ import com.pwr.patrykzdral.nashorn_tic_tac_toe.ui_model.Tile;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
@@ -28,6 +31,7 @@ public class MainController implements Initializable {
     public  Pane paneMain;
 
     private static Pane root = new Pane();
+    public Button buttonRestart;
 
     private MoveStrategy enemyMoveStrategy = new MoveStrategyFromJSFile().load(new File("src/main/resources/move_strategies/randomStrategy.js"));
     public static GameManager gameManager = new GameManager();
@@ -113,5 +117,18 @@ public class MainController implements Initializable {
         gameManager.startNewGame();
         gameManager.setEnemyMoveStrategy(enemyMoveStrategy);
 
+    }
+
+
+
+    public void buttonRestart_onAction(ActionEvent actionEvent) {
+        playable=true;
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                board[i][j].clear();
+            }
+        }
+        root.getChildren().clear();
+        gameManager.startNewGame();
     }
 }

@@ -6,5 +6,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<Pane fx:id="paneMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="453.0" prefWidth="712.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pwr.patrykzdral.nashorn_tic_tac_toe.controller.MainController"/>
+<Pane fx:id="paneMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="743.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pwr.patrykzdral.nashorn_tic_tac_toe.controller.MainController">
+   <children>
+      <ComboBox layoutX="787.0" layoutY="71.0" prefHeight="49.0" prefWidth="205.0" />
+      <Label layoutX="854.0" layoutY="34.0" text="STRATEGIE" />
+      <Button layoutX="787.0" layoutY="128.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="205.0" text="Zmień strategię" />
+      <Button fx:id="buttonRestart" layoutX="787.0" layoutY="663.0" mnemonicParsing="false" onAction="#buttonRestart_onAction" prefHeight="49.0" prefWidth="205.0" text="zrestartuj grę" />
+   </children>
+</Pane>

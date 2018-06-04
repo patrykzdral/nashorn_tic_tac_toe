@@ -10,9 +10,9 @@ public class Combo {
         if (tiles[0].getValue().isEmpty())
             return false;
 
-        return tiles[0].getValue().equals(tiles[1].getValue())
+        return !tiles[0].getValue().equals(" ") && (tiles[0].getValue().equals(tiles[1].getValue())
                 && tiles[0].getValue().equals(tiles[2].getValue())
                 && tiles[0].getValue().equals(tiles[3].getValue())
-                && tiles[0].getValue().equals(tiles[4].getValue());
+                && tiles[0].getValue().equals(tiles[4].getValue()));
     }
 }
